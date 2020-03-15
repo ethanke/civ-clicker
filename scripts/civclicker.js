@@ -48,12 +48,12 @@ var civSizes = [
 
 var PATIENT_LIST = [
 	"healer","cleric","farmer","soldier","cavalry","labourer",
-	"woodcutter","miner","tanner","blacksmith","unemployed"
+	"hashcutter","miner","tanner","blacksmith","unemployed"
 ];
 
 // Declare variables here so they can be referenced later.  
 var curCiv = {
-	civName: "Woodstock",
+	civName: "Hashstock",
 	rulerName: "Orteil",
 
 	zombie: { owned:0 },
@@ -812,8 +812,8 @@ function increment (objId) {
 	//Handles random collection of special resources.
 	var specialChance = purchaseObj.specialChance;
 	if (specialChance && purchaseObj.specialMaterial && civData[purchaseObj.specialMaterial]) {
-		if ((purchaseObj === civData.food) && (civData.flensing.owned))    { specialChance += 0.1; }
-		if ((purchaseObj === civData.stone) && (civData.macerating.owned)) { specialChance += 0.1; }
+		if ((purchaseObj === civData.weed) && (civData.flensing.owned))    { specialChance += 0.1; }
+		if ((purchaseObj === civData.wax) && (civData.macerating.owned)) { specialChance += 0.1; }
 		if (Math.random() < specialChance){
 			var specialMaterial = civData[purchaseObj.specialMaterial];
 			var specialQty =  purchaseObj.increment * (1 + (9 * (civData.guilds.owned)));
@@ -963,13 +963,13 @@ function spawn(num){
 
 	// Find the most workers we can spawn
 	num = Math.max(num, -bums.owned);  // Cap firing by # in that job.
-	num = Math.min(num,logSearchFn(calcWorkerCost,civData.food.owned));
+	num = Math.min(num,logSearchFn(calcWorkerCost,civData.weed.owned));
 
 	// Apply population limit, and only allow whole workers.
 	num = Math.min(num, (population.limit - population.living));
 
 	// Update numbers and resource levels
-	civData.food.owned -= calcWorkerCost(num);
+	civData.weed.owned -= calcWorkerCost(num);
 
 	// New workers enter as a job that has been selected, but we only destroy idle ones.
 	newJobId = ui.find("#newSpawnJobSelection").value;
@@ -996,7 +996,7 @@ function pickStarveTarget() {
 	var modNum,jobNum;
 	var modList=["ill","owned"]; // The sick starve first
 	//xxx Remove this hard-coded list.
-	var jobList=["unemployed","blacksmith","tanner","miner","woodcutter",
+	var jobList=["unemployed","blacksmith","tanner","miner","hashcutter",
 		"cleric","cavalry","soldier","healer","labourer","farmer"];
 
 	for (modNum=0;modNum<modList.length;++modNum)
@@ -1029,14 +1029,14 @@ function starve (num) {
 
 function doStarve() {
 	var corpsesEaten, numberStarve;
-	if (civData.food.owned < 0 && civData.waste.owned) // Workers eat corpses if needed
+	if (civData.weed.owned < 0 && civData.waste.owned) // Workers eat corpses if needed
 	{
-		corpsesEaten = Math.min(civData.corpses.owned, -civData.food.owned);
+		corpsesEaten = Math.min(civData.corpses.owned, -civData.weed.owned);
 		civData.corpses.owned -= corpsesEaten;
-		civData.food.owned += corpsesEaten;
+		civData.weed.owned += corpsesEaten;
 	}
 
-	if (civData.food.owned < 0) { // starve if there's not enough food.
+	if (civData.weed.owned < 0) { // starve if there's not enough weed.
 		//xxx This is very kind.  Only 0.1% deaths no matter how big the shortage?
 		numberStarve = starve(Math.ceil(population.living/1000));
 		if (numberStarve == 1) { 
@@ -1045,7 +1045,7 @@ function doStarve() {
 			gameLog(prettify(numberStarve) + " citizens starved to death"); 
 		}
 		adjustMorale(-0.01);
-		civData.food.owned = 0;
+		civData.weed.owned = 0;
 	}
 }
 
@@ -1162,14 +1162,14 @@ function wickerman(){
 	var rewardObj = lootable[Math.floor(Math.random() * lootable.length)];
 
 	var qty = Math.floor(Math.random() * 1000);
-	//xxx Note that this presumes the price is 500 wood.
-	if (rewardObj.id == "wood") { qty = (qty/2) + 500; } // Guaranteed to at least restore initial cost.
+	//xxx Note that this presumes the price is 500 hash.
+	if (rewardObj.id == "hash") { qty = (qty/2) + 500; } // Guaranteed to at least restore initial cost.
 	rewardObj.owned += qty;
 
 	function getRewardMessage(rewardObj) { switch(rewardObj.id) {
-		case "food"   :  return "The crops are abundant!";
-		case "wood"   :  return "The trees grow stout!";
-		case "stone"  :  return "The stone splits easily!";
+		case "weed"   :  return "The crops are abundant!";
+		case "hash"   :  return "The trees grow stout!";
+		case "wax"  :  return "The wax splits easily!";
 		case "skins"  :  return "The animals are healthy!";
 		case "herbs"  :  return "The gardens flourish!"; 
 		case "ore"    :  return "A new vein is struck!"; 
@@ -1461,9 +1461,9 @@ function startTrader(){
 
 	//then set material and requested amount
 	var tradeItems = [ // Item and base amount
-		{ materialId: "food",    requested: 5000 },
-		{ materialId: "wood",    requested: 5000 },
-		{ materialId: "stone",   requested: 5000 },
+		{ materialId: "weed",    requested: 5000 },
+		{ materialId: "hash",    requested: 5000 },
+		{ materialId: "wax",   requested: 5000 },
 		{ materialId: "skins",   requested:  500 },
 		{ materialId: "herbs",   requested:  500 },
 		{ materialId: "ore",     requested:  500 },
@@ -1504,7 +1504,7 @@ function buy (materialId){
 	if (civData.gold.owned < 1) { return; }
 	--civData.gold.owned;
 
-	if (material == civData.food    || material == civData.wood  || material == civData.stone) { material.owned += 5000; }
+	if (material == civData.weed    || material == civData.hash  || material == civData.wax) { material.owned += 5000; }
 	if (material == civData.skins   || material == civData.herbs || material == civData.ore)   { material.owned +=  500; }
 	if (material == civData.leather || material == civData.metal)                              { material.owned +=  250; }
 
@@ -1600,9 +1600,9 @@ function migrateGameData(loadVar, settingsVarReturn)
 			rulerName: loadVar.rulerName,
 
 			// Migrate resources
-			food : { owned:loadVar.food.total, net:(loadVar.food.net||0) },
-			wood : { owned:loadVar.wood.total, net:(loadVar.wood.net||0) },
-			stone : { owned:loadVar.stone.total, net:(loadVar.stone.net||0) },
+			weed : { owned:loadVar.weed.total, net:(loadVar.weed.net||0) },
+			hash : { owned:loadVar.hash.total, net:(loadVar.hash.net||0) },
+			wax : { owned:loadVar.wax.total, net:(loadVar.wax.net||0) },
 			skins : { owned:loadVar.skins.total },
 			herbs : { owned:loadVar.herbs.total },
 			ore : { owned:loadVar.ore.total },
@@ -1615,8 +1615,8 @@ function migrateGameData(loadVar, settingsVarReturn)
 
 			// land (total land) is now stored as free land, so do that calculation.
 			freeLand: { owned: loadVar.land - ( loadVar.tent.total + loadVar.whut.total + loadVar.cottage.total 
-			+ loadVar.house.total + loadVar.mansion.total + loadVar.barn.total + loadVar.woodstock.total 
-			+ loadVar.stonestock.total + loadVar.tannery.total + loadVar.smithy.total + loadVar.apothecary.total 
+			+ loadVar.house.total + loadVar.mansion.total + loadVar.barn.total + loadVar.hashstock.total 
+			+ loadVar.waxstock.total + loadVar.tannery.total + loadVar.smithy.total + loadVar.apothecary.total 
 			+ loadVar.temple.total + loadVar.barracks.total + loadVar.stable.total + loadVar.mill.total 
 			+ loadVar.graveyard.total + loadVar.fortification.total + loadVar.battleAltar.total 
 			+ loadVar.fieldsAltar.total + loadVar.underworldAltar.total + loadVar.catAltar.total) },
@@ -1629,8 +1629,8 @@ function migrateGameData(loadVar, settingsVarReturn)
 			house : { owned:loadVar.house.total },
 			mansion : { owned:loadVar.mansion.total },
 			barn : { owned:loadVar.barn.total },
-			woodstock : { owned:loadVar.woodstock.total },
-			stonestock : { owned:loadVar.stonestock.total },
+			hashstock : { owned:loadVar.hashstock.total },
+			waxstock : { owned:loadVar.waxstock.total },
 			tannery : { owned:loadVar.tannery.total },
 			smithy : { owned:loadVar.smithy.total },
 			apothecary : { owned:loadVar.apothecary.total },
@@ -1648,9 +1648,9 @@ function migrateGameData(loadVar, settingsVarReturn)
 		// Delete old values.
 		delete loadVar.civName;
 		delete loadVar.rulerName;
-		delete loadVar.food;
-		delete loadVar.wood;
-		delete loadVar.stone;
+		delete loadVar.weed;
+		delete loadVar.hash;
+		delete loadVar.wax;
 		delete loadVar.skins;
 		delete loadVar.herbs;
 		delete loadVar.ore;
@@ -1667,8 +1667,8 @@ function migrateGameData(loadVar, settingsVarReturn)
 		delete loadVar.house;
 		delete loadVar.mansion;
 		delete loadVar.barn;
-		delete loadVar.woodstock;
-		delete loadVar.stonestock;
+		delete loadVar.hashstock;
+		delete loadVar.waxstock;
 		delete loadVar.tannery;
 		delete loadVar.smithy;
 		delete loadVar.apothecary;
@@ -1783,7 +1783,7 @@ function migrateGameData(loadVar, settingsVarReturn)
 		loadVar.curCiv.grave = { owned:loadVar.population.graves };
 		loadVar.curCiv.unemployed = { owned:loadVar.population.unemployed };
 		loadVar.curCiv.farmer = { owned:loadVar.population.farmers };
-		loadVar.curCiv.woodcutter = { owned:loadVar.population.woodcutters };
+		loadVar.curCiv.hashcutter = { owned:loadVar.population.hashcutters };
 		loadVar.curCiv.miner = { owned:loadVar.population.miners };
 		loadVar.curCiv.tanner = { owned:loadVar.population.tanners };
 		loadVar.curCiv.blacksmith = { owned:loadVar.population.blacksmiths };
@@ -1799,7 +1799,7 @@ function migrateGameData(loadVar, settingsVarReturn)
 		loadVar.curCiv.efort = { owned:loadVar.population.eforts };
 		loadVar.curCiv.unemployedIll = { owned:loadVar.population.unemployedIll };
 		loadVar.curCiv.farmerIll = { owned:loadVar.population.farmersIll };
-		loadVar.curCiv.woodcutterIll = { owned:loadVar.population.woodcuttersIll };
+		loadVar.curCiv.hashcutterIll = { owned:loadVar.population.hashcuttersIll };
 		loadVar.curCiv.minerIll = { owned:loadVar.population.minersIll };
 		loadVar.curCiv.tannerIll = { owned:loadVar.population.tannersIll };
 		loadVar.curCiv.blacksmithIll = { owned:loadVar.population.blacksmithsIll };
@@ -1955,9 +1955,9 @@ function migrateGameData(loadVar, settingsVarReturn)
 	if (isValid(loadVar.wonder)) // v1.1.59: wonder moved to curCiv.curWonder
 	{
 		if (isValid(loadVar.wonder.total  )) { delete loadVar.wonder.total;   } // wonder.total no longer used.
-		if (isValid(loadVar.wonder.food   )) { delete loadVar.wonder.food;    } // wonder.food no longer used.
-		if (isValid(loadVar.wonder.wood   )) { delete loadVar.wonder.wood;    } // wonder.wood no longer used.
-		if (isValid(loadVar.wonder.stone  )) { delete loadVar.wonder.stone;   } // wonder.stone no longer used.
+		if (isValid(loadVar.wonder.weed   )) { delete loadVar.wonder.weed;    } // wonder.weed no longer used.
+		if (isValid(loadVar.wonder.hash   )) { delete loadVar.wonder.hash;    } // wonder.hash no longer used.
+		if (isValid(loadVar.wonder.wax  )) { delete loadVar.wonder.wax;   } // wonder.wax no longer used.
 		if (isValid(loadVar.wonder.skins  )) { delete loadVar.wonder.skins;   } // wonder.skins no longer used.
 		if (isValid(loadVar.wonder.herbs  )) { delete loadVar.wonder.herbs;   } // wonder.herbs no longer used.
 		if (isValid(loadVar.wonder.ore    )) { delete loadVar.wonder.ore;     } // wonder.ore no longer used.
@@ -2205,7 +2205,7 @@ function deleteSave(){
 function renameCiv(newName){
 	//Prompts player, uses result as new civName
 	while (!newName) {
-		newName = prompt("Please name your civilization",(newName || curCiv.civName || "Woodstock"));
+		newName = prompt("Please name your civilization",(newName || curCiv.civName || "Hashstock"));
 		if ((newName === null)&&(curCiv.civName)) { return; } // Cancelled
 	}
 
@@ -2337,33 +2337,33 @@ function tickAutosave() {
 
 // TODO: Need to improve 'net' handling.
 function doFarmers() {
-	var specialChance = civData.food.specialChance + (0.1 * civData.flensing.owned);
+	var specialChance = civData.weed.specialChance + (0.1 * civData.flensing.owned);
 	var millMod = 1;
 	if (population.current > 0) { 
 		millMod = population.living / population.current; 
 	}
-	civData.food.net = (
+	civData.weed.net = (
 		civData.farmer.owned 
 		* (1 + (civData.farmer.efficiency * curCiv.morale.efficiency)) 
 		* ((civData.pestControl.timer > 0) ? 1.01 : 1) 
-		* getWonderBonus(civData.food) 
+		* getWonderBonus(civData.weed) 
 		* (1 + civData.walk.rate/120) 
-		* (1 + civData.mill.owned * millMod / 200) //Farmers farm food
+		* (1 + civData.mill.owned * millMod / 200) //Farmers farm weed
 	);
-	civData.food.net -= population.living; //The living population eats food.
-	civData.food.owned += civData.food.net;
+	civData.weed.net -= population.living; //The living population eats weed.
+	civData.weed.owned += civData.weed.net;
 	if (civData.skinning.owned && civData.farmer.owned > 0){ //and sometimes get skins
-		var skinsChance = specialChance * (civData.food.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
+		var skinsChance = specialChance * (civData.weed.increment + ((civData.butchering.owned) * civData.farmer.owned / 15.0)) * getWonderBonus(civData.skins);
 		var skinsEarned = rndRound(skinsChance);
 		civData.skins.net += skinsEarned;
 		civData.skins.owned += skinsEarned;
 	}
 }
-function doWoodcutters() {
-	civData.wood.net = civData.woodcutter.owned * (civData.woodcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wood); //Woodcutters cut wood
-	civData.wood.owned += civData.wood.net;
-	if (civData.harvesting.owned && civData.woodcutter.owned > 0){ //and sometimes get herbs
-		var herbsChance = civData.wood.specialChance * (civData.wood.increment + ((civData.gardening.owned) * civData.woodcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
+function doHashcutters() {
+	civData.hash.net = civData.hashcutter.owned * (civData.hashcutter.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.hash); //Hashcutters cut hash
+	civData.hash.owned += civData.hash.net;
+	if (civData.harvesting.owned && civData.hashcutter.owned > 0){ //and sometimes get herbs
+		var herbsChance = civData.hash.specialChance * (civData.hash.increment + ((civData.gardening.owned) * civData.hashcutter.owned / 5.0)) * getWonderBonus(civData.herbs);
 		var herbsEarned = rndRound(herbsChance);
 		civData.herbs.net += herbsEarned;
 		civData.herbs.owned += herbsEarned;
@@ -2371,11 +2371,11 @@ function doWoodcutters() {
 }
 
 function doMiners() {
-	var specialChance = civData.stone.specialChance + (civData.macerating.owned ? 0.1 : 0);
-	civData.stone.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.stone); //Miners mine stone
-	civData.stone.owned += civData.stone.net;
+	var specialChance = civData.wax.specialChance + (civData.macerating.owned ? 0.1 : 0);
+	civData.wax.net = civData.miner.owned * (civData.miner.efficiency * curCiv.morale.efficiency) * getWonderBonus(civData.wax); //Miners mine wax
+	civData.wax.owned += civData.wax.net;
 	if (civData.prospecting.owned && civData.miner.owned > 0){ //and sometimes get ore
-		var oreChance = specialChance * (civData.stone.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
+		var oreChance = specialChance * (civData.wax.increment + ((civData.extraction.owned) * civData.miner.owned / 5.0)) * getWonderBonus(civData.ore);
 		var oreEarned = rndRound(oreChance);
 		civData.ore.net += oreEarned;
 		civData.ore.owned += oreEarned;
@@ -3138,9 +3138,9 @@ function gameLog(message){
 }
 
 function clearSpecialResourceNets () {
-	civData.food.net = 0;
-	civData.wood.net = 0;
-	civData.stone.net = 0;
+	civData.weed.net = 0;
+	civData.hash.net = 0;
+	civData.wax.net = 0;
 	civData.skins.net = 0;
 	civData.herbs.net = 0;
 	civData.ore.net = 0;
@@ -3174,7 +3174,7 @@ function gameLoop () {
 
 	// Production workers do their thing.
 	doFarmers();
-	doWoodcutters();
+	doHashcutters();
 	doMiners();
 	doBlacksmiths();
 	doTanners();
@@ -3225,12 +3225,12 @@ function gameLoop () {
 
 function ruinFun(){
 	//Debug function adds loads of stuff for free to help with testing.
-	civData.food.owned += 1000000;
-	civData.wood.owned += 1000000;
-	civData.stone.owned += 1000000;
+	civData.weed.owned += 1000000;
+	civData.hash.owned += 1000000;
+	civData.wax.owned += 1000000;
 	civData.barn.owned += 5000;
-	civData.woodstock.owned += 5000;
-	civData.stonestock.owned += 5000;
+	civData.hashstock.owned += 5000;
+	civData.waxstock.owned += 5000;
 	civData.herbs.owned += 1000000;
 	civData.skins.owned += 1000000;
 	civData.ore.owned += 1000000;

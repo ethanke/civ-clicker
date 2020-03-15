@@ -209,9 +209,9 @@ function updateResourceTotals(){
 	//}
 
 	//Update page with building numbers, also stockpile limits.
-	ui.find("#maxfood").innerHTML = prettify(civData.food.limit);
-	ui.find("#maxwood").innerHTML = prettify(civData.wood.limit);
-	ui.find("#maxstone").innerHTML = prettify(civData.stone.limit);
+	ui.find("#maxweed").innerHTML = prettify(civData.weed.limit);
+	ui.find("#maxhash").innerHTML = prettify(civData.hash.limit);
+	ui.find("#maxwax").innerHTML = prettify(civData.wax.limit);
 	ui.find("#totalBuildings").innerHTML = prettify(landTotals.buildings);
 	ui.find("#totalLand"     ).innerHTML = prettify(landTotals.lands);
 
@@ -313,7 +313,7 @@ function updatePopulation (calc) {
 	}
 
 	//Turning on/off buttons based on free space.
-	var maxSpawn = Math.max(0,Math.min((population.limit - population.living),logSearchFn(calcWorkerCost,civData.food.owned)));
+	var maxSpawn = Math.max(0,Math.min((population.limit - population.living),logSearchFn(calcWorkerCost,civData.weed.owned)));
 
 	spawn1button.disabled = (maxSpawn < 1);
 	spawnCustomButton.disabled = (maxSpawn < 1);
@@ -334,11 +334,11 @@ function updatePopulation (calc) {
 
 	ui.find("#workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
 
-	spawn1button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1))) + " food";
-	spawn10button.title = "Cost: " + prettify(Math.round(calcWorkerCost(10))) + " food";
-	spawn100button.title = "Cost: " + prettify(Math.round(calcWorkerCost(100))) + " food";
-	spawn1000button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1000))) + " food";
-	spawnMaxbutton.title = "Cost: " + prettify(Math.round(calcWorkerCost(maxSpawn))) + " food";
+	spawn1button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1))) + " weed";
+	spawn10button.title = "Cost: " + prettify(Math.round(calcWorkerCost(10))) + " weed";
+	spawn100button.title = "Cost: " + prettify(Math.round(calcWorkerCost(100))) + " weed";
+	spawn1000button.title = "Cost: " + prettify(Math.round(calcWorkerCost(1000))) + " weed";
+	spawnMaxbutton.title = "Cost: " + prettify(Math.round(calcWorkerCost(maxSpawn))) + " weed";
 
 	ui.find("#workerCost").innerHTML = prettify(Math.round(calcWorkerCost(1)));
 

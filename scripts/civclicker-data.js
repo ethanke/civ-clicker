@@ -6,7 +6,7 @@ function getCivData () {
 	var civData = [
 	// Resources
 	new Resource({ 
-		id:"food", name:"food", increment:1, specialChance:0.1,
+		id:"weed", name:"weed", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "skins", verb: "harvest", activity: "harvesting", //I18N
 		get limit() { 
@@ -16,17 +16,17 @@ function getCivData () {
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
 	new Resource({ 
-		id:"wood", name:"wood", increment:1, specialChance:0.1,
+		id:"hash", name:"hash", increment:1, specialChance:0.1,
 		subType:"basic",
-		specialMaterial: "herbs", verb: "cut", activity: "woodcutting", //I18N
-		get limit() { return 200 + (civData.woodstock.owned  * 200); },
+		specialMaterial: "herbs", verb: "cut", activity: "hashcutting", //I18N
+		get limit() { return 200 + (civData.hashstock.owned  * 200); },
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
 	new Resource({ 
-		id:"stone", name:"stone", increment:1, specialChance:0.1,
+		id:"wax", name:"wax", increment:1, specialChance:0.1,
 		subType:"basic",
 		specialMaterial: "ore", verb: "mine", activity: "mining", //I18N
-		get limit() { return 200 + (civData.stonestock.owned  * 200); },
+		get limit() { return 200 + (civData.waxstock.owned  * 200); },
 		set limit(value) { return this.limit; } // Only here for JSLint.
 	}),
 	new Resource({ id:"skins", singular:"skin", plural:"skins"}),
@@ -48,21 +48,21 @@ function getCivData () {
 		effectText:"Conquer more from your neighbors." }),
 	new Building({ 
 		id:"tent", singular:"tent", plural:"tents",
-		require: { wood:2, skins:2 },
+		require: { hash:2, skins:2 },
 		effectText:"+1 max pop." }),
 	new Building({ 
-		id:"hut", singular:"wooden hut", plural:"wooden huts",
-		require : { wood:20, skins:1 },
+		id:"hut", singular:"hashen hut", plural:"hashen huts",
+		require : { hash:20, skins:1 },
 		effectText:"+3 max pop." }),
 	new Building({ 
 		id:"cottage", singular:"cottage", plural:"cottages",
 		prereqs:{ masonry: true },
-		require:{ wood:10, stone:30 },
+		require:{ hash:10, wax:30 },
 		effectText:"+6 max pop." }),
 	new Building({ 
 		id:"house", singular:"house", plural:"houses",
 		prereqs:{ construction: true },
-		require:{ wood:30, stone:70 },
+		require:{ hash:30, wax:70 },
 		get effectText() { 
 			var maxPop = 10 + 2*(civData.slums.owned + civData.tenements.owned); 
 			return "+" + maxPop + " max pop."; 
@@ -76,14 +76,14 @@ function getCivData () {
 	new Building({ 
 		id: "mansion", singular:"mansion", plural:"mansions",
 		prereqs:{ architecture: true },
-		require:{ wood:200, stone:200, leather:20 },
+		require:{ hash:200, wax:200, leather:20 },
 		effectText:"+50 max pop." }),
 	new Building({ 
 		id: "barn", singular:"barn", plural:"barns",
-		require:{ wood: 100 },
+		require:{ hash: 100 },
 		get effectText() {
 			var barnBonus = ((civData.granaries.owned ? 2 : 1) * 200);
-			return "+" + barnBonus + " food storage"; 
+			return "+" + barnBonus + " weed storage"; 
 		},
 		set effectText(value) { return this.effectText; },
 		update: function() { 
@@ -92,34 +92,34 @@ function getCivData () {
 		} 
 	}),
 	new Building({ 
-		id: "woodstock", singular:"wood stockpile", plural:"wood stockpiles",
-		require:{ wood:100 },
-		effectText: "+200 wood storage" 
+		id: "hashstock", singular:"hash stockpile", plural:"hash stockpiles",
+		require:{ hash:100 },
+		effectText: "+200 hash storage" 
 	}),
 	new Building({ 
-		id: "stonestock", singular:"stone stockpile", plural:"stone stockpiles",
-		require:{ wood:100 },
-		effectText: "+200 stone storage" 
+		id: "waxstock", singular:"wax stockpile", plural:"wax stockpiles",
+		require:{ hash:100 },
+		effectText: "+200 wax storage" 
 	}),
 	new Building({ 
 		id: "tannery", singular:"tannery", plural:"tanneries",
 		prereqs:{ masonry: true },
-		require:{ wood:30, stone:70, skins:2 },
+		require:{ hash:30, wax:70, skins:2 },
 		effectText:"allows 1 tanner" }),
 	new Building({ 
 		id: "smithy", singular:"smithy", plural:"smithies",
 		prereqs:{ masonry: true },
-		require:{ wood:30, stone:70, ore:2 },
+		require:{ hash:30, wax:70, ore:2 },
 		effectText:"allows 1 blacksmith" }),
 	new Building({ 
 		id: "apothecary", singular:"apothecary", plural:"apothecaries",
 		prereqs:{ masonry: true },
-		require:{ wood:30, stone:70, herbs:2 },
+		require:{ hash:30, wax:70, herbs:2 },
 		effectText:"allows 1 healer" }),
 	new Building({ 
 		id:"temple", singular:"temple", plural:"temples",
 		prereqs:{ masonry: true },
-		require:{ wood:30, stone:120 },
+		require:{ hash:30, wax:120 },
 		effectText:"allows 1 cleric",
 		// If purchase was a temple and aesthetics has been activated, increase morale
 		// If population is large, temples have less effect.
@@ -132,17 +132,17 @@ function getCivData () {
 	new Building({ 
 		id: "barracks", name: "barracks",
 		prereqs:{ masonry: true },
-		require:{ food:20, wood:60, stone:120, metal:10 },
+		require:{ weed:20, hash:60, wax:120, metal:10 },
 		effectText:"allows 10 soldiers" }),
 	new Building({ 
 		id: "stable", singular:"stable", plural:"stables",
 		prereqs:{ horseback: true },
-		require:{ food:60, wood:60, stone:120, leather:10 },
+		require:{ weed:60, hash:60, wax:120, leather:10 },
 		effectText:"allows 10 cavalry" }),
 	new Building({ 
 		id: "graveyard", singular:"graveyard", plural:"graveyards",
 		prereqs:{ masonry: true },
-		require:{ wood:50, stone:200, herbs:50 },
+		require:{ hash:50, wax:200, herbs:50 },
 		vulnerable: false, // Graveyards can't be sacked
 		effectText:"contains 100 graves",
 		onGain: function(num) { if (num === undefined) { num = 1; } digGraves(num); }}),
@@ -151,8 +151,8 @@ function getCivData () {
 		prereqs:{ wheel: true },
 		get require() { 
 			return { 
-				wood: 100 * (this.owned + 1) * Math.pow(1.05,this.owned),
-				stone: 100 * (this.owned + 1) * Math.pow(1.05,this.owned) 
+				hash: 100 * (this.owned + 1) * Math.pow(1.05,this.owned),
+				wax: 100 * (this.owned + 1) * Math.pow(1.05,this.owned) 
 			}; 
 		},
 		set require(value) { return this.require; }, // Only here for JSLint.
@@ -164,7 +164,7 @@ function getCivData () {
 		// Eventually, this will take a qty parameter
 		get require() { 
 			return { 
-				stone : function() { return 100 * (this.owned + 1) * Math.pow(1.05,this.owned); }.bind(this) 
+				wax : function() { return 100 * (this.owned + 1) * Math.pow(1.05,this.owned); }.bind(this) 
 			}; 
 		},
 		set require(value) { return this.require; }, // Only here for JSLint.
@@ -176,29 +176,29 @@ function getCivData () {
 		id: "battleAltar", name:"Build Altar", singular:"battle altar", plural:"battle altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "battle" },
-		get require() { return { stone:200, piety:200, metal : 50 + (50 * this.owned) }; },
+		get require() { return { wax:200, piety:200, metal : 50 + (50 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
 	new Building({ 
 		id: "fieldsAltar", name:"Build Altar", singular:"fields altar", plural:"fields altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "fields" },
-		get require() { return { stone:200, piety:200,
-				food : 500 + (250 * this.owned), wood : 500 + (250 * this.owned) }; },
+		get require() { return { wax:200, piety:200,
+				weed : 500 + (250 * this.owned), hash : 500 + (250 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
 	new Building({ 
 		id: "underworldAltar", name:"Build Altar", singular:"underworld altar", plural:"underworld altars",
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "underworld" },
-		get require() { return { stone:200, piety:200, corpses : 1 + this.owned }; },
+		get require() { return { wax:200, piety:200, corpses : 1 + this.owned }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
 	new Building({ 
 		id: "catAltar", name:"Build Altar", singular:"cat altar", plural:"cat altars", 
 		subType: "altar", devotion:1,
 		prereqs:{ deity: "cats" },
-		get require() { return { stone:200, piety:200, herbs : 100 + (50 * this.owned) }; },
+		get require() { return { wax:200, piety:200, herbs : 100 + (50 * this.owned) }; },
 		set require(value) { return this.require; }, // Only here for JSLint.
 		effectText:"+1 Devotion" }),
 	// Upgrades
@@ -209,7 +209,7 @@ function getCivData () {
 	new Upgrade({ 
 		id: "harvesting", name:"Harvesting", subType: "upgrade",
 		require: { herbs: 10 },
-		effectText:"Woodcutters can collect herbs" }),
+		effectText:"Hashcutters can collect herbs" }),
 	new Upgrade({ 
 		id: "prospecting", name:"Prospecting", subType: "upgrade",
 		require: { ore: 10 },
@@ -218,17 +218,17 @@ function getCivData () {
 		id: "domestication", name:"Domestication", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { leather: 20 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "ploughshares", name:"Ploughshares", subType: "upgrade",
 		prereqs:{ masonry: true },
 		require: { metal:20 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "irrigation", name:"Irrigation", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 500, stone: 200 },
-		effectText:"Increase farmer food output" }),
+		require: { hash: 500, wax: 200 },
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "butchering", name:"Butchering", subType: "upgrade",
 		prereqs:{ construction: true, skinning: true },
@@ -238,7 +238,7 @@ function getCivData () {
 		id: "gardening", name:"Gardening", subType: "upgrade",
 		prereqs:{ construction: true, harvesting: true },
 		require: { herbs: 40 },
-		effectText:"More woodcutters collect more herbs" }),
+		effectText:"More hashcutters collect more herbs" }),
 	new Upgrade({ 
 		id: "extraction", name:"Extraction", subType: "upgrade",
 		prereqs:{ construction: true, prospecting: true },
@@ -252,83 +252,83 @@ function getCivData () {
 	new Upgrade({ 
 		id: "macerating", name:"Macerating", subType: "upgrade",
 		prereqs:{ architecture: true },
-		require: { leather: 500, stone: 500 },
+		require: { leather: 500, wax: 500 },
 		effectText:"Collect ore more frequently" }),
 	new Upgrade({ 
 		id: "croprotation", name:"Crop Rotation", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { herbs: 5000, piety: 1000 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "selectivebreeding", name:"Selective Breeding", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { skins: 5000, piety: 1000 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "fertilisers", name:"Fertilisers", subType: "upgrade",
 		prereqs:{ architecture: true },
 		require: { ore: 5000, piety: 1000 },
-		effectText:"Increase farmer food output" }),
+		effectText:"Increase farmer weed output" }),
 	new Upgrade({ 
 		id: "masonry", name:"Masonry", subType: "upgrade",
-		require: { wood: 100, stone: 100 },
+		require: { hash: 100, wax: 100 },
 		effectText:"Unlock more buildings and upgrades" }),
 	new Upgrade({ 
 		id: "construction", name:"Construction", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 1000, stone: 1000 },
+		require: { hash: 1000, wax: 1000 },
 		effectText:"Unlock more buildings and upgrades" }),
 	new Upgrade({ 
 		id: "architecture", name:"Architecture", subType: "upgrade",
 		prereqs:{ construction: true },
-		require: { wood: 10000, stone: 10000 },
+		require: { hash: 10000, wax: 10000 },
 		effectText:"Unlock more buildings and upgrades" }),
 	new Upgrade({ 
 		id: "tenements", name:"Tenements", subType: "upgrade",
 		prereqs:{ construction: true },
-		require: { food: 200, wood: 500, stone: 500 },
+		require: { weed: 200, hash: 500, wax: 500 },
 		effectText:"Houses support +2 workers",
 		onGain: function() { updatePopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "slums", name:"Slums", subType: "upgrade",
 		prereqs:{ architecture: true },
-		require: { food: 500, wood: 1000, stone: 1000 },
+		require: { weed: 500, hash: 1000, wax: 1000 },
 		effectText:"Houses support +2 workers",
 		onGain: function() { updatePopulation(); } //due to population limits changing
 	}),
 	new Upgrade({ 
 		id: "granaries", name:"Granaries", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 1000, stone: 1000 },
-		effectText:"Barns store double the amount of food",
+		require: { hash: 1000, wax: 1000 },
+		effectText:"Barns store double the amount of weed",
 		onGain: function() { updateResourceTotals(); } //due to resource limits increasing
 	}),
 	new Upgrade({ 
 		id: "palisade", name:"Palisade", subType: "upgrade",
 		efficiency: 0.01, // Subtracted from attacker efficiency.
 		prereqs:{ construction: true },
-		require: { wood: 2000, stone: 1000 },
+		require: { hash: 2000, wax: 1000 },
 		effectText:"Enemies do less damage" }),
 	new Upgrade({ 
 		id: "weaponry", name:"Basic Weaponry", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 500, metal: 500 },
+		require: { hash: 500, metal: 500 },
 		effectText:"Improve soldiers" }),
 	new Upgrade({ 
 		id: "shields", name:"Basic Shields", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 500, leather: 500 },
+		require: { hash: 500, leather: 500 },
 		effectText:"Improve soldiers" }),
 	new Upgrade({ 
 		id: "horseback", name:"Horseback Riding", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { food: 500, wood: 500 },
+		require: { weed: 500, hash: 500 },
 		effectText:"Build stables" }),
 	new Upgrade({ 
 		id: "wheel", name:"The Wheel", subType: "upgrade",
 		prereqs:{ masonry: true },
-		require: { wood: 500, stone: 500 },
+		require: { hash: 500, wax: 500 },
 		effectText:"Build mills" }),
 	new Upgrade({ 
 		id: "writing", name:"Writing", subType: "upgrade",
@@ -338,12 +338,12 @@ function getCivData () {
 	new Upgrade({ 
 		id: "administration", name:"Administration", subType: "upgrade",
 		prereqs:{ writing: true },
-		require: { stone: 1000, skins: 1000 },
+		require: { wax: 1000, skins: 1000 },
 		effectText:"Increase land gained from raiding" }),
 	new Upgrade({ 
 		id: "codeoflaws", name:"Code of Laws", subType: "upgrade",
 		prereqs:{ writing: true },
-		require: { stone: 1000, skins: 1000 },
+		require: { wax: 1000, skins: 1000 },
 		effectText:"Reduce unhappiness caused by overcrowding" }),
 	new Upgrade({ 
 		id: "mathematics", name:"Mathematics", subType: "upgrade",
@@ -405,11 +405,11 @@ function getCivData () {
 	new Upgrade({ id:"blessing", name:"Blessing of Abundance", subType: "pantheon",
 		prereqs:{ deity: "fields", devotion: 10 },
 		require: { piety: 1000 },
-		effectText:"increase farmer food output" }),
+		effectText:"increase farmer weed output" }),
 	new Upgrade({ id:"waste", name:"Abide No Waste", subType: "pantheon",
 		prereqs:{ deity: "fields", devotion: 30 },
 		require: { piety: 1000 },
-		effectText:"workers will eat corpses if there is no food left" }),
+		effectText:"workers will eat corpses if there is no weed left" }),
 	new Upgrade({ id:"stay", name:"Stay With Us", subType: "pantheon",
 		prereqs:{ deity: "fields", devotion: 50 },
 		require: { piety: 5000 },
@@ -470,7 +470,7 @@ function getCivData () {
 		effectText:"Temporarily makes raids more difficult, increases rewards" }),
 	new Upgrade({ id:"wickerman", name:"Burn Wicker Man", subType: "prayer",
 		prereqs:{ deity: "fields", devotion: 20 },
-		require: { wood: 500 },  //xxx +1 Worker
+		require: { hash: 500 },  //xxx +1 Worker
 		effectText:"Sacrifice 1 worker to gain a random bonus to a resource" }),
 	new Upgrade({ id:"walk", name:"Walk Behind the Rows", subType: "prayer",
 		prereqs:{ deity: "fields", devotion: 40 },
@@ -478,7 +478,7 @@ function getCivData () {
 		init: function(fullInit) { Upgrade.prototype.init.call(this,fullInit); this.rate = 0; },
 		get rate() { return this.data.rate; }, // Sacrifice rate
 		set rate(value) { this.data.rate = value; },
-		effectText:"boost food production by sacrificing 1 worker/sec.",
+		effectText:"boost weed production by sacrificing 1 worker/sec.",
 		extraText: "<br /><button id='ceaseWalk' onmousedown='walk(false)' disabled='disabled'>Cease Walking</button>" }),
 	new Upgrade({ id:"raiseDead", name:"Raise Dead", subType: "prayer",
 		prereqs:{ deity: "underworld", devotion: 20 },
@@ -496,7 +496,7 @@ function getCivData () {
 		init: function(fullInit) { Upgrade.prototype.init.call(this,fullInit); this.timer = 0; },
 		get timer() { return this.data.timer; }, // Pest hunting time left
 		set timer(value) { this.data.timer = value; },
-		effectText:"Give temporary boost to food production" }),
+		effectText:"Give temporary boost to weed production" }),
 	new Upgrade({ id:"grace", name:"Grace", subType: "prayer",
 		prereqs:{ deity: "cats", devotion: 40 },
 		require: { piety: 1000 }, //xxx This is not fixed; see curCiv.graceCost
@@ -532,18 +532,18 @@ function getCivData () {
 				+ civData.blessing.owned)); 
 		},
 		set efficiency(value) { this.efficiency_base = value; },
-		effectText:"Automatically harvest food" 
+		effectText:"Automatically harvest weed" 
 	}),
 	new Unit({ 
-		id:"woodcutter", singular:"woodcutter", plural:"woodcutters",
+		id:"hashcutter", singular:"hashcutter", plural:"hashcutters",
 		source:"unemployed",
 		efficiency: 0.5,
-		effectText:"Automatically cut wood" }),
+		effectText:"Automatically cut hash" }),
 	new Unit({ 
 		id:"miner", singular:"miner", plural:"miners",
 		source:"unemployed",
 		efficiency: 0.2,
-		effectText:"Automatically mine stone" }),
+		effectText:"Automatically mine wax" }),
 	new Unit({ 
 		id:"tanner", singular:"tanner", plural:"tanners",
 		source:"unemployed",
@@ -604,7 +604,7 @@ function getCivData () {
 		get efficiency() { return this.efficiency_base + playerCombatMods(); },
 		set efficiency(value) { this.efficiency_base = value; },
 		prereqs:{ stable: 1 },
-		require:{ food:20, leather:20 },
+		require:{ weed:20, leather:20 },
 		get limit() { return 10*civData.stable.owned; },
 		set limit(value) { return this.limit; }, // Only here for JSLint.
 		effectText:"Protect from attack" }),
@@ -685,7 +685,7 @@ function getCivData () {
 		id:"siege", singular:"siege engine", plural:"siege engines",
 		efficiency: 0.1, // 10% chance to hit
 		prereqs:{ standard: true, mathematics: true },
-		require:{ wood:200, leather:50, metal:50 },
+		require:{ hash:200, leather:50, metal:50 },
 		species:"mechanical",
 		place: "party",
 		salable: false,
@@ -821,9 +821,9 @@ function getCivData () {
 function getWonderResources (civData) {
 	// The resources that Wonders consume, and can give bonuses for.
 	return wonderResources = [
-		civData.food,
-		civData.wood,
-		civData.stone,
+		civData.weed,
+		civData.hash,
+		civData.wax,
 		civData.skins,
 		civData.herbs,
 		civData.ore,
